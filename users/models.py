@@ -87,7 +87,7 @@ class Payment(models.Model):
     )
 
     def __str__(self):
-        return f"Payment for {self.course} by {self.user.name}"
+        return f"Payment for {self.course} by {self.user.email}"
 
     class Meta:
         verbose_name = "payment"
