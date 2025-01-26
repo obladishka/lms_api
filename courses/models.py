@@ -14,6 +14,15 @@ class Course(models.Model):
     description = models.TextField(
         verbose_name="course description", help_text="Enter your course description", null=True, blank=True
     )
+    owner = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        related_name="courses",
+        verbose_name="owner",
+        help_text="Select the owner",
+        null=True,
+        black=True,
+    )
 
     def __str__(self):
         return self.name
@@ -47,6 +56,15 @@ class Lesson(models.Model):
         help_text="Select the course",
         null=True,
         blank=True,
+    )
+    owner = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        related_name="lessons",
+        verbose_name="owner",
+        help_text="Select the owner",
+        null=True,
+        black=True,
     )
 
     def __str__(self):
