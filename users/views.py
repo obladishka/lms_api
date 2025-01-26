@@ -13,7 +13,7 @@ class UserCreateAPIView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         user = serializer.save()
-        user.set_password(user.password)
+        user.set_password(serializer.validated_data["password"])
         user.is_active = True
         user.save()
 
