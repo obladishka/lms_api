@@ -1,5 +1,7 @@
 from django.db import models
 
+from config.settings import AUTH_USER_MODEL
+
 
 class Course(models.Model):
 
@@ -15,13 +17,13 @@ class Course(models.Model):
         verbose_name="course description", help_text="Enter your course description", null=True, blank=True
     )
     owner = models.ForeignKey(
-        "users.User",
+        AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="courses",
         verbose_name="owner",
         help_text="Select the owner",
         null=True,
-        black=True,
+        blank=True,
     )
 
     def __str__(self):
@@ -58,13 +60,13 @@ class Lesson(models.Model):
         blank=True,
     )
     owner = models.ForeignKey(
-        "users.User",
+        AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="lessons",
         verbose_name="owner",
         help_text="Select the owner",
         null=True,
-        black=True,
+        blank=True,
     )
 
     def __str__(self):
