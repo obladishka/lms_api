@@ -13,3 +13,10 @@ class IsOwner(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return obj.owner == request.user
+
+
+class IsUser(BasePermission):
+    """Class for determining perms for users."""
+
+    def has_object_permission(self, request, view, obj):
+        return obj == request.user

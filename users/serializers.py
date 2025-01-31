@@ -15,6 +15,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
+            "id",
             "password",
             "username",
             "email",
@@ -27,4 +28,18 @@ class UserSerializer(serializers.ModelSerializer):
             "is_active",
             "date_joined",
             "payments",
+        )
+
+
+class UserBaseSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = (
+            "id",
+            "username",
+            "email",
+            "phone_number",
+            "city",
+            "avatar",
         )
