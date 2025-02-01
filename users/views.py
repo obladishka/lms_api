@@ -29,18 +29,14 @@ class UserRetrieveAPIView(generics.RetrieveAPIView):
     queryset = User.objects.all()
 
     def get_serializer_class(self):
-        if self.kwargs["pk"] == self.request.user.pk:
+        if self.kwargs.get("pk") == self.request.user.pk:
             return UserSerializer
         return UserBaseSerializer
 
 
 class UserListAPIView(generics.ListAPIView):
     queryset = User.objects.all()
-
-    def get_serializer_class(self):
-        if self.request == self.request.user.pk:
-            return UserSerializer
-        return UserBaseSerializer
+    serializer_class = UserBaseSerializer
 
 
 class UserDestroyAPIView(generics.DestroyAPIView):
