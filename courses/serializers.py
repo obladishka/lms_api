@@ -1,9 +1,12 @@
 from rest_framework import serializers
 
 from courses.models import Course, Lesson
+from courses.validators import URLValidator
 
 
 class LessonSerializer(serializers.ModelSerializer):
+    video_url = serializers.URLField(validators=[URLValidator()])
+
     class Meta:
         model = Lesson
         fields = "__all__"
