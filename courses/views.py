@@ -3,12 +3,14 @@ from rest_framework import generics, views, viewsets
 from rest_framework.response import Response
 
 from courses.models import Course, Lesson, Subscription
+from courses.pagination import LMSPagination
 from courses.serializers import CourseSerializer, LessonSerializer
 from users.permissions import IsModerator, IsOwner
 
 
 class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
+    pagination_class = LMSPagination
 
     def get_permissions(self):
         if self.action == "create":
@@ -58,6 +60,7 @@ class LessonCreateAPIView(generics.CreateAPIView):
 class LessonListAPIView(generics.ListAPIView):
     serializer_class = LessonSerializer
     permission_classes = (IsModerator | IsOwner,)
+    pagination_class = LMSPagination
 
     def get_queryset(self):
         if not IsModerator().has_permission(self.request, self):
