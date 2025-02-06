@@ -2,12 +2,13 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from courses.models import Lesson, Course
+from courses.models import Course, Lesson
 from users.models import User
 
 
 class LessonUserTestCase(APITestCase):
     """Test cases for common user."""
+
     def setUp(self):
         self.user = User.objects.create(email="user@user.ru")
         self.lesson = Lesson.objects.create(name="Lesson 1", owner=self.user)
@@ -69,10 +70,10 @@ class LessonUserTestCase(APITestCase):
                         "description": None,
                         "preview": None,
                         "course": None,
-                        "owner": self.user.pk
+                        "owner": self.user.pk,
                     }
-                ]
-            }
+                ],
+            },
         )
 
     def test_lesson_update(self):
@@ -94,6 +95,7 @@ class LessonUserTestCase(APITestCase):
 
 class LessonModeratorTestCase(APITestCase):
     """Test cases for moderators."""
+
     def setUp(self):
         self.user = User.objects.create(email="user@user.ru")
         self.lesson = Lesson.objects.create(name="Lesson 1", owner=self.user)
@@ -150,10 +152,10 @@ class LessonModeratorTestCase(APITestCase):
                         "description": None,
                         "preview": None,
                         "course": None,
-                        "owner": self.user.pk
+                        "owner": self.user.pk,
                     }
-                ]
-            }
+                ],
+            },
         )
 
     def test_lesson_update(self):
@@ -186,6 +188,7 @@ class LessonModeratorTestCase(APITestCase):
 
 class CourseSubscriptionTestCase(APITestCase):
     """Test cases for course subscription."""
+
     def setUp(self):
         self.user = User.objects.create(email="user@user.ru")
         self.course = Course.objects.create(name="Course 1", owner=self.user)
@@ -224,6 +227,7 @@ class CourseSubscriptionTestCase(APITestCase):
 
 class CourseUserTestCase(APITestCase):
     """Test cases for common user."""
+
     def setUp(self):
         self.user = User.objects.create(email="user@user.ru")
         self.course = Course.objects.create(name="Course 1", owner=self.user)
@@ -266,10 +270,10 @@ class CourseUserTestCase(APITestCase):
                         "owner": self.user.pk,
                         "amount_of_lessons": 0,
                         "lessons": [],
-                        "is_subscribed": False
+                        "is_subscribed": False,
                     }
-                ]
-            }
+                ],
+            },
         )
 
     def test_course_update(self):
@@ -291,6 +295,7 @@ class CourseUserTestCase(APITestCase):
 
 class CourseModeratorTestCase(APITestCase):
     """Test cases for moderators."""
+
     def setUp(self):
         self.user = User.objects.create(email="user@user.ru")
         self.course = Course.objects.create(name="Course 1", owner=self.user)
@@ -347,10 +352,10 @@ class CourseModeratorTestCase(APITestCase):
                         "owner": self.user.pk,
                         "amount_of_lessons": 0,
                         "lessons": [],
-                        "is_subscribed": False
+                        "is_subscribed": False,
                     }
-                ]
-            }
+                ],
+            },
         )
 
     def test_course_update(self):
