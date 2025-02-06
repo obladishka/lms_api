@@ -5,7 +5,7 @@ from courses.validators import URLValidator
 
 
 class LessonSerializer(serializers.ModelSerializer):
-    video_url = serializers.URLField(validators=[URLValidator()])
+    video_url = serializers.URLField(validators=[URLValidator()], required=False)
 
     class Meta:
         model = Lesson
