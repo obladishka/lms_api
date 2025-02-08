@@ -114,3 +114,5 @@ SIMPLE_JWT = {
 }
 
 PAYMENT_METHODS = (("cash", "cash"), ("bank_transfer", "bank transfer"))
+
+ALLOWED_LESSON_DOMAINS = ("youtube.com",)
