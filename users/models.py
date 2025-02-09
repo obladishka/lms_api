@@ -53,6 +53,8 @@ class Payment(models.Model):
         related_name="payments",
         verbose_name="user",
         help_text="Select the user",
+        null=True,
+        blank=True,
     )
     payment_date = models.DateTimeField(
         verbose_name="payment date", help_text="Enter the payment date", auto_now_add=True
