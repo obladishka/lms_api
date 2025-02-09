@@ -1,10 +1,12 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import generics, views, viewsets
+from drf_spectacular.utils import extend_schema
+from rest_framework import generics, status, views, viewsets
 from rest_framework.response import Response
 
 from courses.models import Course, Lesson, Subscription
 from courses.pagination import LMSPagination
-from courses.serializers import CourseSerializer, LessonSerializer
+from courses.serializers import (CourseSerializer, DocsNoPermissionSerializer, DocsSubscriptionResponseSerializer,
+                                 DocsSubscriptionSerializer, LessonSerializer)
 from users.permissions import IsModerator, IsOwner
 
 
@@ -31,6 +33,12 @@ class CourseViewSet(viewsets.ModelViewSet):
         return Course.objects.all()
 
 
+@extend_schema(
+    request=DocsSubscriptionSerializer,
+    responses={
+        status.HTTP_200_OK: DocsSubscriptionResponseSerializer,
+    },
+)
 class CourseSubscriptionApiView(views.APIView):
     def post(self, *args, **kwargs):
         course_id = self.kwargs.get("pk")
@@ -48,6 +56,12 @@ class CourseSubscriptionApiView(views.APIView):
         return Response({"message": message})
 
 
+@extend_schema(
+    responses={
+        status.HTTP_201_CREATED: LessonSerializer,
+        status.HTTP_403_FORBIDDEN: DocsNoPermissionSerializer,
+    },
+)
 class LessonCreateAPIView(generics.CreateAPIView):
     serializer_class = LessonSerializer
     permission_classes = (~IsModerator,)
@@ -80,6 +94,12 @@ class LessonUpdateAPIView(generics.UpdateAPIView):
     permission_classes = (IsModerator | IsOwner,)
 
 
+@extend_schema(
+    responses={
+        status.HTTP_201_CREATED: LessonSerializer,
+        status.HTTP_403_FORBIDDEN: DocsNoPermissionSerializer,
+    },
+)
 class LessonDestroyAPIView(generics.DestroyAPIView):
     queryset = Lesson.objects.all()
     permission_classes = (~IsModerator | IsOwner,)
