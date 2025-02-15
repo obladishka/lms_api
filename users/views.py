@@ -2,10 +2,12 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
 
 from users.models import Payment, User
 from users.permissions import IsUser
 from users.serializers import PaymentSerializer, UserBaseSerializer, UserSerializer
+from users.services import create_price, get_payment_link
 
 
 class UserCreateAPIView(generics.CreateAPIView):
@@ -14,7 +16,7 @@ class UserCreateAPIView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         user = serializer.save()
-        user.set_password(serializer.validated_data["password"])
+        user.set_password(serializer.validated_data.get("password"))
         user.is_active = True
         user.save()
 
@@ -54,3 +56,28 @@ class PaymentListAPIView(generics.ListAPIView):
         "payment_method",
     )
     ordering_fields = ("payment_date",)
+
+
+class PaymentCreateAPIView(generics.CreateAPIView):
+    serializer_class = PaymentSerializer
+
+    def post(self, request, *args, **kwargs):
+        super().post(request, *args, **kwargs)
+        if request.data.get("payment_method") != "cash":
+            amount = request.data.get("payment_amount")
+            price = create_price(amount)
+            payment_link = get_payment_link(price)
+            return Response(
+                {
+                    "user": request.user.pk,
+                    "course": request.data.get("course"),
+                    "lesson": request.data.get("lesson"),
+                    "payment_amount": request.data.get("payment_amount"),
+                    "payment_method": request.data.get("payment_method"),
+                    "payment_link": payment_link,
+                }
+            )
+
+    def perform_create(self, serializer):
+        payment = serializer.save(user=self.request.user)
+        payment.save()

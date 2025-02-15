@@ -14,10 +14,10 @@ class User(AbstractUser):
     )
     email = models.EmailField(unique=True, verbose_name="email", help_text="Enter your email")
     first_name = models.CharField(
-        max_length=150, verbose_name="first name", help_text="Enter your first name username", null=True, blank=True
+        max_length=150, verbose_name="first name", help_text="Enter your first name", null=True, blank=True
     )
     last_name = models.CharField(
-        max_length=150, verbose_name="last name", help_text="Enter your last name username", null=True, blank=True
+        max_length=150, verbose_name="last name", help_text="Enter your last name", null=True, blank=True
     )
     phone_number = models.CharField(
         max_length=30, verbose_name="phone number", help_text="Enter your phone number", null=True, blank=True
@@ -53,6 +53,8 @@ class Payment(models.Model):
         related_name="payments",
         verbose_name="user",
         help_text="Select the user",
+        null=True,
+        blank=True,
     )
     payment_date = models.DateTimeField(
         verbose_name="payment date", help_text="Enter the payment date", auto_now_add=True

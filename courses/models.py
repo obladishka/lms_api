@@ -64,7 +64,7 @@ class Lesson(models.Model):
         on_delete=models.CASCADE,
         related_name="lessons",
         verbose_name="owner",
-        help_text="Select the owner",
+        help_text="Is automatically filled with the current user's data",
         null=True,
         blank=True,
     )
