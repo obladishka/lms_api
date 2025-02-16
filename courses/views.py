@@ -7,6 +7,7 @@ from courses.models import Course, Lesson, Subscription
 from courses.pagination import LMSPagination
 from courses.serializers import (CourseSerializer, DocsNoPermissionSerializer, DocsSubscriptionResponseSerializer,
                                  DocsSubscriptionSerializer, LessonSerializer)
+from courses.tasks import send_message
 from users.permissions import IsModerator, IsOwner
 
 
@@ -31,6 +32,10 @@ class CourseViewSet(viewsets.ModelViewSet):
         if not IsModerator().has_permission(self.request, self):
             return Course.objects.filter(owner=self.request.user)
         return Course.objects.all()
+
+    def perform_update(self, serializer):
+        course = serializer.save()
+        send_message.delay(course.pk)
 
 
 @extend_schema(
@@ -92,6 +97,10 @@ class LessonUpdateAPIView(generics.UpdateAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = (IsModerator | IsOwner,)
+
+    def perform_update(self, serializer):
+        lesson = serializer.save(owner=self.request.user)
+        send_message.delay(lesson.course.pk)
 
 
 @extend_schema(
