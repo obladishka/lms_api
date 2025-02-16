@@ -1,5 +1,3 @@
-import datetime
-
 from celery import shared_task
 from django.core.mail import send_mail
 from django.utils import timezone
@@ -26,8 +24,8 @@ def send_message(course_pk):
 def block_inactive_users():
     """Blocking inactive users (no activity within 1 month)."""
     today = timezone.now().today()
-    delta = datetime.timedelta(days=30)
-    last_login = today - delta
+    delta = timezone.timedelta(days=30)
+    last_login = timezone.make_aware(today - delta)
     non_active_users = User.objects.filter(last_login__lte=last_login)
 
     if non_active_users:
