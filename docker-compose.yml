@@ -6,8 +6,8 @@ services:
     command: >
         bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
-      - .:/code
-      - static_volume:/code/static
+      - .:/app
+      - static_volume:/app/static
     ports:
       - "8000:8000"
     depends_on:
@@ -38,9 +38,9 @@ services:
       - "6379"
 
   celery:
-    image: celery
+    build: .
     command: >
-      bash -c "celery -A .config worker --loglevel=info --pool=solo"
+       bash -c "celery -A config worker --loglevel=info --pool=solo"
     volumes:
       - .:/app
     env_file:
@@ -50,9 +50,9 @@ services:
       - db
 
   celery-beat:
-    image: substrafoundation/celerybeat
+    build: .
     command: >
-      bash -c "celery -A .config beat -l info"
+      bash -c "celery -A config beat -l info"
     volumes:
       - .:/app
     env_file:
