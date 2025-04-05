@@ -17,6 +17,4 @@ RUN poetry install --no-root
 
 COPY . .
 
-RUN mkdir -p /app/media
-
 EXPOSE 8000
