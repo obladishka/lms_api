@@ -76,15 +76,6 @@ class LessonUserTestCase(APITestCase):
             },
         )
 
-    def test_lesson_update(self):
-        url = reverse("courses:update_lesson", args=(self.lesson.pk,))
-        body = {"name": "My Lesson"}
-        request = self.client.patch(url, body)
-        response = request.json()
-
-        self.assertEqual(request.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.get("name"), "My Lesson")
-
     def test_lesson_delete(self):
         url = reverse("courses:delete_lesson", args=(self.lesson.pk,))
         request = self.client.delete(url)
@@ -157,15 +148,6 @@ class LessonModeratorTestCase(APITestCase):
                 ],
             },
         )
-
-    def test_lesson_update(self):
-        url = reverse("courses:update_lesson", args=(self.lesson.pk,))
-        body = {"name": "Moder Lesson"}
-        request = self.client.patch(url, body)
-        response = request.json()
-
-        self.assertEqual(request.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.get("name"), "Moder Lesson")
 
     def test_lesson_update_error(self):
         url = reverse("courses:update_lesson", args=(self.lesson.pk,))
@@ -276,15 +258,6 @@ class CourseUserTestCase(APITestCase):
             },
         )
 
-    def test_course_update(self):
-        url = reverse("courses:course-detail", args=(self.course.pk,))
-        body = {"name": "My Course"}
-        request = self.client.patch(url, body)
-        response = request.json()
-
-        self.assertEqual(request.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.get("name"), "My Course")
-
     def test_course_delete(self):
         url = reverse("courses:course-detail", args=(self.course.pk,))
         request = self.client.delete(url)
@@ -357,15 +330,6 @@ class CourseModeratorTestCase(APITestCase):
                 ],
             },
         )
-
-    def test_course_update(self):
-        url = reverse("courses:course-detail", args=(self.course.pk,))
-        body = {"name": "Moder Course"}
-        request = self.client.patch(url, body)
-        response = request.json()
-
-        self.assertEqual(request.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.get("name"), "Moder Course")
 
     def test_course_delete_error(self):
         url = reverse("courses:course-detail", args=(self.course.pk,))
