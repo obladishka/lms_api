@@ -1,0 +1,67 @@
+version: '3.9'
+
+services:
+  web:
+    build: .
+    command: >
+        bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+      - static_volume:/app/static
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - ./.env
+
+  db:
+    image: postgres:16
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - ./.env
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  redis:
+    image: redis:7
+    volumes:
+      - .:/data
+    env_file:
+      - ./.env
+    ports:
+      - "6379"
+
+  celery:
+    build: .
+    command: >
+       bash -c "celery -A config worker --loglevel=info --pool=solo"
+    volumes:
+      - .:/app
+    env_file:
+      - ./.env
+    depends_on:
+      - redis
+      - db
+
+  celery-beat:
+    build: .
+    command: >
+      bash -c "celery -A config beat -l info"
+    volumes:
+      - .:/app
+    env_file:
+      - ./.env
+    depends_on:
+      - redis
+      - db
+      - celery
+
+volumes:
+  postgres_data:
+  static_volume:
