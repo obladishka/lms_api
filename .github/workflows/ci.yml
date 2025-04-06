@@ -2,9 +2,6 @@ name: Django CI
 
 on: [push, pull_request]
 
-env:
-  SECRET_KEY: ${{ secrets.SECRET_KEY }}
-
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -29,6 +26,9 @@ jobs:
   test:
     needs: lint
     runs-on: ubuntu-latest
+
+    env:
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
 
     steps:
     - name: Check out code
