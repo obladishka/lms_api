@@ -63,11 +63,6 @@ jobs:
       - name: Log in to Docker Hub
         run: echo ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
 
-      - name: Create .env file
-        run: |
-          echo '"${{ secrets.ENV_FILE }}"' | sed "s/\"//g" > .env
-          echo "TAG=${{ github.sha }}" >> .env
-
       - name: Build Docker image
         run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/lms_api:${{ github.sha }} .
 
