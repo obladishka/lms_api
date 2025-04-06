@@ -27,9 +27,6 @@ jobs:
     needs: lint
     runs-on: ubuntu-latest
 
-    env:
-      SECRET_KEY: ${{ secrets.SECRET_KEY }}
-
     steps:
     - name: Check out code
       uses: actions/checkout@v3
@@ -46,6 +43,11 @@ jobs:
         poetry config virtualenvs.create false
         poetry install --no-root
 
+    - name: Create .env file
+      run: |
+        echo '"${{ secrets.ENV_FILE }}"' | sed "s/\"//g" > .env
+        echo "TAG=${{ github.sha }}" >> .env
+
     - name: Run tests
       run: python manage.py test
 
@@ -61,17 +63,25 @@ jobs:
       - name: Log in to Docker Hub
         run: echo ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
 
+      - name: Create .env file
+        run: |
+          echo '"${{ secrets.ENV_FILE }}"' | sed "s/\"//g" > .env
+          echo "TAG=${{ github.sha }}" >> .env
+
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }} .
+        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/lms_api:${{ github.sha }} .
 
       - name: Push Docker image to Docker Hub
-        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
+        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/lms_api:${{ github.sha }}
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
@@ -81,8 +91,8 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
           cd ${{ secrets.DEPLOY_DIR }}/
-          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
-          docker stop myapp || true
-          docker rm myapp || true
-          docker run -d --name myapp -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
+          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/lms_api:${{ github.sha }}
+          docker stop lms_api || true
+          docker rm lms_api || true
+          docker run -d --name lms_api -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/lms_api:${{ github.sha }}
           EOF
