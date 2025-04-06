@@ -86,10 +86,7 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/lms_api:${{ github.sha }}
-          cd app
-          echo '"${{ secrets.ENV_FILE }}"' | sed "s/\"//g" > .env
-          echo "TAG=${{ github.sha }}" >> .env
           docker stop lms_api || true
           docker rm lms_api || true
-          docker run -d --name lms_api -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/lms_api:${{ github.sha }}
+          docker run -d --name lms_api --env-file .env -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/lms_api:${{ github.sha }}
           EOF
